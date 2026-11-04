@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lucas-Check: a mock store, from SQL to Next.js</title>
+<meta name="description" content="Lucas-Check is a mock sporting goods store from the COSC 304 database course, rebuilt with Next.js 16 and Postgres for Vercel. Try a working miniature of the store, watch its database relations animate, and see the project then and now.">
+<meta name="theme-color" content="#f4ecda">
+<link rel="canonical" href="https://dhairyab0069.github.io/lucascheck-io/">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Lucas-Check: a mock store, from SQL to Next.js">
+<meta property="og:description" content="A working miniature of the store, an animated database diagram, and the COSC 304 group project then and now.">
+<meta property="og:url" content="https://dhairyab0069.github.io/lucascheck-io/">
+<meta property="og:image" content="https://dhairyab0069.github.io/lucascheck-io/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A price tag reading Lucas-Check Sporting Goods beside a receipt and a small database diagram">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to the store</a>
+
+<header class="top">
+  <a class="back" href="https://dhairyab0069.github.io/">&larr; dhairyab0069</a>
+  <nav aria-label="Sections">
+    <a href="#store">Store</a><a href="#diagram">Database</a><a href="#then-now">Then and now</a><a href="#about">About</a>
+  </nav>
+  <button type="button" class="snd" data-sound-switch aria-pressed="false"><span class="lbl">Sound off</span></button>
+</header>
+
+<main id="main">
+
+<section class="hero" aria-labelledby="h-title">
+  <div class="tag" aria-hidden="true">
+    <span class="tag-hole"></span>
+    <span class="tag-top">COSC 304 &middot; Group 4</span>
+    <span class="tag-name">Lucas-Check</span>
+    <span class="tag-sub">Sporting Goods</span>
+    <span class="tag-price">$0.00</span>
+    <span class="tag-bars"></span>
+  </div>
+  <div class="hero-text">
+    <p class="kicker">A database course project, rebuilt</p>
+    <h1 id="h-title">A store you can check out of, and the tables behind it.</h1>
+    <p class="lede">Lucas-Check is a mock sporting goods store. It began as the term project for COSC 304, Introduction to Database
+      Systems: JSP pages on Tomcat over a SQL Server database. In 2026 it was rebuilt on Next.js 16 and Postgres so it can run on
+      Vercel. This page keeps a small working copy of the store, draws its schema, and lines the two versions up.</p>
+    <ul class="facts" aria-label="At a glance">
+      <li><b>25</b> products</li><li><b>6</b> categories</li><li><b>8</b> tables <span class="dim">(11 then)</span></li><li><b>5</b> sample accounts</li>
+    </ul>
+    <p class="cta">
+      <a class="btn primary" href="#store">Open the store</a>
+      <a class="btn" href="https://lucascheck.vercel.app" rel="noopener">Live demo on Vercel</a>
+      <a class="btn" href="https://github.com/dhairyab0069/LucasCheck" rel="noopener">Source on GitHub</a>
+    </p>
+  </div>
+</section>
+
+<!-- ============ the store in miniature ============ -->
+<section id="store" class="band" aria-labelledby="h-store">
+  <div class="band-head">
+    <p class="kicker">1 &middot; The store, in miniature</p>
+    <h2 id="h-store">Shop, check out, ship.</h2>
+    <p class="lede">The same products, prices, stock, customers and orders as the real store, and the same rules: the cart holds only ids and
+      quantities (capped at 99) and is priced from the product table, checkout needs a login, an order ships only if every line
+      is in stock, and only once. It runs in this page, not on a server, so nothing leaves your browser.
+      Log in as <code>arnold</code> (password <code>test</code>) to use the Admin tab.</p>
+  </div>
+
+  <div class="shop">
+    <div class="shop-main card">
+      <div class="tabs" role="tablist" aria-label="Store sections">
+        <button type="button" role="tab" id="tab-shop" aria-controls="panel-shop" aria-selected="true">Shop</button>
+        <button type="button" role="tab" id="tab-orders" aria-controls="panel-orders" aria-selected="false" tabindex="-1">My orders</button>
+        <button type="button" role="tab" id="tab-admin" aria-controls="panel-admin" aria-selected="false" tabindex="-1">Admin</button>
+      </div>
+
+      <div id="panel-shop" role="tabpanel" aria-labelledby="tab-shop">
+        <div class="toolbar">
+          <label class="search"><span class="vh">Search products</span><input id="search" type="search" placeholder="Search products" autocomplete="off"></label>
+          <div id="chips" class="chips" role="group" aria-label="Category"></div>
+        </div>
+        <p id="count" class="count" aria-live="polite"></p>
+        <ul id="products" class="products"></ul>
+      </div>
+      <div id="panel-orders" role="tabpanel" aria-labelledby="tab-orders" hidden></div>
+      <div id="panel-admin" role="tabpanel" aria-labelledby="tab-admin" hidden></div>
+    </div>
+
+    <aside class="side" aria-label="Account and cart">
+      <section class="card account" id="account" aria-live="polite"></section>
+      <section class="card cart" id="cart" aria-labelledby="h-cart">
+        <h3 id="h-cart">Your cart</h3>
+        <div id="cart-body"></div>
+      </section>
+    </aside>
+  </div>
+
+  <div class="sqlbox">
+    <div class="sqlbox-head">
+      <h3>The SQL behind each click</h3>
+      <button type="button" class="btn small" id="reset-store">Reset the store</button>
+    </div>
+    <p class="note">Each action shows the statements the real store sends to Postgres, with this page's values filled in.</p>
+    <ol id="sqllog" class="sqllog" aria-live="off" tabindex="0" aria-label="Recent SQL statements"><li class="empty">Add something to the cart, log in, place an order.</li></ol>
+  </div>
+  <p id="live" class="vh" role="status" aria-live="polite"></p>
+</section>
+
+<!-- ============ the diagram ============ -->
+<section id="diagram" class="band alt" aria-labelledby="h-diagram">
+  <div class="band-head">
+    <p class="kicker">2 &middot; The database</p>
+    <h2 id="h-diagram">Eight tables, joined by keys.</h2>
+    <p class="lede">What the course was about: schema design and SQL. Pick a walkthrough and step through it; each step lights the tables and
+      foreign keys the query touches, with the statement the app runs. Select a table to see what it connects to. The row counts
+      are live: place and ship an order above and watch them move.</p>
+  </div>
+
+  <div class="dg-controls">
+    <div class="seg" role="group" aria-label="Which schema">
+      <button type="button" data-era="now" aria-pressed="true">Now: Postgres, 8 tables</button>
+      <button type="button" data-era="then" aria-pressed="false">Then: SQL Server, 11 tables</button>
+    </div>
+    <div class="seg" id="scenes" role="group" aria-label="Walkthrough"></div>
+    <div class="steps" id="stepper">
+      <button type="button" class="btn small" id="dg-back">Back</button>
+      <button type="button" class="btn small primary" id="dg-play">Play</button>
+      <button type="button" class="btn small" id="dg-next">Step</button>
+      <button type="button" class="btn small" id="dg-clear">Clear</button>
+    </div>
+  </div>
+
+  <div class="dg-wrap" tabindex="0" role="region" aria-label="Database diagram, scrolls sideways on small screens">
+    <svg id="dg" class="dg" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Entity relationship diagram"></svg>
+  </div>
+  <div class="dg-info">
+    <div class="dg-caption" aria-live="polite">
+      <p class="dg-step" id="dg-stepno"></p>
+      <p id="dg-text">Select a table, or pick a walkthrough and press Play.</p>
+    </div>
+    <pre class="dg-sql" id="dg-sql" aria-label="SQL for this step"><code>-- the statement for each step appears here</code></pre>
+  </div>
+  <div class="dg-legend" aria-hidden="true">
+    <span><i class="k pk"></i>primary key</span><span><i class="k fk"></i>foreign key</span><span><i class="k uq"></i>unique</span>
+    <span><b>N</b> / <b>1</b> many-to-one end of a relation</span>
+  </div>
+</section>
+
+<!-- ============ then and now ============ -->
+<section id="then-now" class="band" aria-labelledby="h-tn">
+  <div class="band-head">
+    <p class="kicker">3 &middot; Then and now</p>
+    <h2 id="h-tn">From JSP and SQL Server to Next.js and Postgres.</h2>
+    <p class="lede">Drag the handle (or use the arrow keys) to wipe from the course project to the rebuild. Every row is a real difference
+      between the original code and what is in the repository today.</p>
+  </div>
+
+  <ol class="timeline" aria-label="Timeline">
+    <li><span class="when">COSC 304 labs</span><span>Four lab assignments build the store, its schema and the JSP site, written up in the project report.</span></li>
+    <li><span class="when">3 March 2023</span><span>All the site's code is uploaded to the repository in a single commit.</span></li>
+    <li><span class="when">Then</span><span>The Vercel deployment answers every page with a 404: JSP cannot run there, and there was no root index.</span></li>
+    <li><span class="when">19 October 2026</span><span>The rebuild is merged: Next.js 16, React 19, Tailwind 4, Postgres, deployable on Vercel.</span></li>
+    <li><span class="when">Now</span><span>The live demo answers on <a href="https://lucascheck.vercel.app" rel="noopener">lucascheck.vercel.app</a>.</span></li>
+  </ol>
+
+  <div class="wipe" id="wipe" style="--p:50%">
+    <div class="wipe-head" aria-hidden="true"><span>Then &middot; 2023</span><span>Now &middot; 2026</span></div>
+    <div id="rows" class="wipe-rows"></div>
+    <div class="wipe-line" aria-hidden="true"><span class="knob"></span></div>
+    <label class="wipe-range"><span class="vh">Wipe between the course project and the rebuild</span>
+      <input id="wipe-range" type="range" min="0" max="100" value="50" step="1" aria-valuetext="Halfway between then and now"></label>
+  </div>
+</section>
+
+<!-- ============ about ============ -->
+<section id="about" class="band alt" aria-labelledby="h-about">
+  <div class="band-head">
+    <p class="kicker">4 &middot; About this page</p>
+    <h2 id="h-about">What is real here.</h2>
+  </div>
+  <div class="about">
+    <div>
+      <h3>The real thing</h3>
+      <p>The store itself is a Next.js 16 app with React Server Components, Server Actions, Tailwind 4, and Postgres through <code>pg</code>
+        (or PGlite, Postgres in WebAssembly, for the no-setup demo). Sessions are a signed HTTP-only cookie; passwords are bcrypt hashes.
+        <a href="https://lucascheck.vercel.app" rel="noopener">Open the live demo</a>, or read the
+        <a href="https://github.com/dhairyab0069/LucasCheck" rel="noopener">code</a> and the original
+        <a href="https://github.com/dhairyab0069/LucasCheck/blob/main/docs/COSC304-Report.pdf" rel="noopener">course report</a>.</p>
+    </div>
+    <div>
+      <h3>The miniature</h3>
+      <p>The store on this page is a separate, plain JavaScript re-implementation of the same rules over the same seed data, with no
+        server, so the page can live on GitHub Pages. It is not the Next.js app, and with no payment step nothing is for sale.
+        The sample accounts' passwords are public on purpose. Orders you place stay in this browser (local storage, when allowed) until you reset.</p>
+    </div>
+    <div>
+      <h3>The group</h3>
+      <p>Lucas-Check began as the COSC 304 term project of <b>Group 4</b>: Dhairya Bhatia, Jay Bhullar and Sumer Mann, with Khalid Mahmoud as
+        instructor. The Next.js rebuild is Dhairya's. Product photos were collected by the group from retailers' public listings for the
+        course project; brand names in the photos belong to their owners.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <p>Static page: HTML, CSS and vanilla JavaScript, no libraries, no external requests, no trackers.
+    <a href="https://github.com/dhairyab0069/lucascheck-io" rel="noopener">Page source</a> &middot; <a href="https://dhairyab0069.github.io/">dhairyab0069</a></p>
+</footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/schema.js"></script>
+<script src="assets/model.js"></script>
+<script src="assets/dom.js"></script>
+<script src="assets/sound.js"></script>
+<script src="assets/diagram.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
