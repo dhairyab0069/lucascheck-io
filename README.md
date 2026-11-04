@@ -31,6 +31,10 @@ The Sound switch (top bar, off by default, remembered in `localStorage`) turns o
 scanner beep when something goes in the cart, a till drawer and bell when an order is placed, a box thud and tape for shipping, a buzz
 for errors, a ping per diagram step. There are no audio files. Nothing plays while the tab is hidden.
 
+## Light, dark and auto
+
+Three icon buttons in the top bar (sun, moon, half circle) choose light, dark or auto (follow the system). The choice is stored under the key `theme` in `localStorage`, which every page on dhairyab0069.github.io shares, so changing it here changes it on the other sites too, live. Light is the cream shelf-paper look; dark is the same store at night, with warm near-black paper, cream ink and brighter price-tag red and sale-sticker yellow. Product photos keep their white stage in both. The change is a short circle reveal with a soft sound cue, and is instant under `prefers-reduced-motion`. An inline script in `index.html` applies the saved mode before the first paint.
+
 ## Motion and accessibility
 
 The swaying tag, the flowing relation lines, the travelling dot, the wipe's intro sweep and the diagram's auto-play are skipped when the

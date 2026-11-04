@@ -153,4 +153,10 @@ ok("reduced motion is respected in CSS and script", () => {
   assert.match(read("assets/style.css"), /prefers-reduced-motion: reduce/);
   assert.match(read("assets/dom.js"), /prefers-reduced-motion: reduce/);
 });
+ok("theme: shared key, early script and radiogroup are in place", () => {
+  assert.ok(html.indexOf("getItem('theme')") > 0 && html.indexOf("getItem('theme')") < html.indexOf("assets/style.css"));
+  assert.match(html, /role="radiogroup" aria-label="Color theme"/);
+  assert.equal((html.match(/role="radio"/g) || []).length, 3);
+});
+
 console.log(`\n${n} checks passed`);

@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lucas-Check: a mock store, from SQL to Next.js</title>
 <meta name="description" content="Lucas-Check is a mock sporting goods store from the COSC 304 database course, rebuilt with Next.js 16 and Postgres for Vercel. Try a working miniature of the store, watch its database relations animate, and see the project then and now.">
-<meta name="theme-color" content="#f4ecda">
+<meta name="theme-color" content="#f4ecda" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15110c" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://dhairyab0069.github.io/lucascheck-io/">
 <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
 <meta property="og:type" content="website">
@@ -17,6 +18,17 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="A price tag reading Lucas-Check Sporting Goods beside a receipt and a small database diagram">
 <meta name="twitter:card" content="summary_large_image">
+<script>
+/* Theme: light, dark or auto, one `theme` key shared by every page on dhairyab0069.github.io. Applied before first paint. */
+(function () {
+  var m;
+  try { m = localStorage.getItem('theme'); } catch (e) {}
+  if (m !== 'light' && m !== 'dark') m = 'auto';
+  var t = m === 'auto' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : m;
+  var h = document.documentElement;
+  h.setAttribute('data-theme', t); h.setAttribute('data-theme-mode', m); h.style.colorScheme = t;
+})();
+</script>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -27,7 +39,14 @@
   <nav aria-label="Sections">
     <a href="#store">Store</a><a href="#diagram">Database</a><a href="#then-now">Then and now</a><a href="#about">About</a>
   </nav>
-  <button type="button" class="snd" data-sound-switch aria-pressed="false"><span class="lbl">Sound off</span></button>
+  <div class="ctl">
+    <div class="theme-switch" role="radiogroup" aria-label="Color theme">
+      <button type="button" role="radio" aria-checked="false" data-theme-mode="light" aria-label="Light theme" title="Light theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/></svg></button>
+      <button type="button" role="radio" aria-checked="false" data-theme-mode="dark" aria-label="Dark theme" title="Dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></button>
+      <button type="button" role="radio" aria-checked="false" data-theme-mode="auto" aria-label="Match system theme" title="Auto (match system)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor"/></svg></button>
+    </div>
+    <button type="button" class="snd" data-sound-switch aria-pressed="false"><span class="lbl">Sound off</span></button>
+  </div>
 </header>
 
 <main id="main">
@@ -216,6 +235,7 @@
 <script src="assets/model.js"></script>
 <script src="assets/dom.js"></script>
 <script src="assets/sound.js"></script>
+<script src="assets/theme.js"></script>
 <script src="assets/diagram.js"></script>
 <script src="assets/app.js"></script>
 </body>

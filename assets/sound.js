@@ -79,6 +79,7 @@
       hiss({ at: 0.1, type: "bandpass", f: 900, to: 2600, q: 1.5, dur: 0.38, gain: 0.05 });
     },
     step: function () { if (gap("step", 80)) return; tone({ f: 740, dur: 0.12, type: "sine", gain: 0.05 }); },
+    theme: function (dark) { [0, 7, 12].forEach(function (n, i) { var k = dark ? 12 - n : n; tone({ at: i * 0.06, f: 523.25 * Math.pow(2, k / 12), dur: 0.18, type: "triangle", gain: 0.04 }); }); },
     reset: function () { tone({ f: 440, to: 220, dur: 0.15, type: "triangle", gain: 0.04 }); }
   };
 
@@ -97,7 +98,7 @@
     if (on) setTimeout(function () { if (ready()) sounds.login(); }, 120);
   }
   window.Sfx = {
-    play: function (name) { if (!ready() || !sounds[name]) return; try { sounds[name](); } catch (e) { /* audio is optional */ } },
+    play: function (name, arg) { if (!ready() || !sounds[name]) return; try { sounds[name](arg); } catch (e) { /* audio is optional */ } },
     toggle: toggle,
     isOn: function () { return on; }
   };
