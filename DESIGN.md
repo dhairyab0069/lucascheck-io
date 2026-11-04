@@ -1,9 +1,9 @@
 # Lucas-Check: design
 
-Written 2026-11-04 from what the page does now. Keep it current: every change gets a line in "Decisions and trade-offs".
+Describes what the page does now.
 
 ## Purpose
-Show the Lucas-Check project (a COSC 304 database course store, rebuilt on Next.js 16 and Postgres) by letting people use a small working copy of the store in the page, see the schema as a diagram, and compare the course version with the rebuild. Data lives in `assets/data.js`, the store logic in `assets/model.js`, rendering in `assets/app.js`, the diagram in `assets/diagram.js`.
+Show the Lucas-Check project (a COSC 304 database course store on Next.js 16 and Postgres) by letting people use a small working copy of the store in the page and see the schema as a diagram. Data lives in `assets/data.js`, the store logic in `assets/model.js`, rendering in `assets/app.js`, the diagram in `assets/diagram.js`.
 
 ## Theme choice and why
 A shelf-paper, price-tag look: cream paper, heavy ink borders with hard offset shadows, tag red and sale-sticker yellow, condensed display type and monospace receipts. It fits a sporting-goods store and keeps a course project feeling hand-made. Dark mode is the same store at night: warm near-black paper, cream ink, brighter tag red and yellow; product photos keep their white stage in both.
@@ -28,7 +28,7 @@ Type is system-only: `--head` (Avenir Next Condensed, Arial Narrow, Impact fallb
 
 ## Motion spec
 - Gate: `html[data-motion="on|off"]` from the Motion control; off (or the system asking for reduced motion) kills every CSS animation and transition (the tag stays at its resting tilt), and the JS loops check `LucasDom.reducedMotion()`, which reads the same gate.
-- What moves: the price tag sways, relation lines in the diagram flow and a dot travels along them (one `requestAnimationFrame` loop that stops when motion goes off), added-to-cart pop, row-count bump, the "then and now" wipe slider's intro sweep, the diagram's Play (hidden when motion is off; Step and Back remain), the theme reveal.
+- What moves: the price tag sways, relation lines in the diagram flow and a dot travels along them (one `requestAnimationFrame` loop that stops when motion goes off), added-to-cart pop, row-count bump, the diagram's Play (hidden when motion is off; Step and Back remain), the theme reveal.
 - Transform, opacity and stroke properties only; nothing flashes.
 
 ## Effects (the Effects control)
@@ -45,8 +45,7 @@ Type is system-only: `--head` (Avenir Next Condensed, Arial Narrow, Impact fallb
 |---|---|---|
 | Bottom-right dock | Light, Dark, Auto; Sound, Motion, Effects, Quiet everything | icon fill and glyph, live-region message, cue |
 | Store | add and remove cart items, log in, check out, ship an order (admin), search and filter chips, tabs | scanner beep, till bell, shipping thud, error buzz, pop and count bump |
-| Diagram | select a table, Step, Back, Play, era toggle | highlighted relations, flowing lines, travelling dot, ping per step, SQL shown |
-| Then and now | wipe slider and timeline | clip reveal, intro sweep |
+| Diagram | select a table, Step, Back, Play | highlighted relations, flowing lines, travelling dot, ping per step, SQL shown |
 | Pointer | move | yellow glow, paper specks (Effects) |
 
 ## Accessibility notes

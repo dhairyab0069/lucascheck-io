@@ -49,16 +49,14 @@ ok("seed matches LucasCheck's schema.ts when it is available", () => {
 });
 
 ok("diagram: every relation names real tables and columns", () => {
-  for (const era of ["now", "then"]) {
-    const ids = SCHEMA[era].tables.map((t) => t.id);
-    assert.equal(new Set(ids).size, ids.length);
-    for (const r of SCHEMA[era].rels) for (const [t, c] of [r.a, r.b]) {
-      const tb = SCHEMA[era].tables.find((x) => x.id === t);
-      assert.ok(tb, `${r.id}: table ${t}`);
-      assert.ok(tb.cols.some((x) => x[0] === c), `${r.id}: ${t}.${c}`);
-    }
+  const ids = SCHEMA.now.tables.map((t) => t.id);
+  assert.equal(new Set(ids).size, ids.length);
+  for (const r of SCHEMA.now.rels) for (const [t, c] of [r.a, r.b]) {
+    const tb = SCHEMA.now.tables.find((x) => x.id === t);
+    assert.ok(tb, `${r.id}: table ${t}`);
+    assert.ok(tb.cols.some((x) => x[0] === c), `${r.id}: ${t}.${c}`);
   }
-  assert.equal(SCHEMA.now.tables.length, 8); assert.equal(SCHEMA.then.tables.length, 11);
+  assert.equal(SCHEMA.now.tables.length, 8);
 });
 ok("diagram: walkthroughs only use tables and relations that exist", () => {
   for (const sc of SCHEMA.scenes) for (const s of sc.steps) {

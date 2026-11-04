@@ -315,52 +315,10 @@
 
   $("search").addEventListener("input", function (e) { view.search = e.target.value; renderProducts(); });
 
-  /* ---- then and now ---- */
-  var ROWS = [
-    ["Pages", "JSP pages served by Tomcat 9", "Next.js 16 App Router, React 19 Server Components and Server Actions"],
-    ["Database", "SQL Server 2019 in Docker", "Postgres through pg, or PGlite (Postgres in WebAssembly) for the no-setup demo"],
-    ["Credentials", "The database password written into six pages", "A connection string in an environment variable"],
-    ["Passwords", "Stored and compared as plain text", "bcrypt hashes"],
-    ["Cart", "Name and price travel in the Add to cart link, so anyone could edit the price", "The cart holds only product ids; prices always come from the database"],
-    ["Checkout", "You typed a customer id, so you could order as anyone", "Checkout uses the logged-in account"],
-    ["Orders and Admin", "List All Orders open to everyone; Admin open to any logged-in user", "Orders only to their owner; Admin only to administrators"],
-    ["Shipping", "Could take stock below zero under load, and an order could ship twice", "Guarded in one transaction: quantity >= needed, order_id UNIQUE"],
-    ["Hosting", "On Vercel every page answered 404", "Deploys on Vercel; the live demo answers"]
-  ];
-  var rows = $("rows");
-  ROWS.forEach(function (r) {
-    rows.appendChild(h("div", { class: "wrow" },
-      h("h4", { text: r[0] }),
-      h("div", { class: "stack" },
-        h("p", { class: "then" }, h("span", { class: "vh", text: "Then: " }), r[1]),
-        h("p", { class: "now" }, h("span", { class: "vh", text: "Now: " }), r[2]))));
-  });
-  var wipe = $("wipe"), range = $("wipe-range");
-  function setWipe(v) {
-    wipe.style.setProperty("--p", v + "%");
-    range.setAttribute("aria-valuetext", v <= 5 ? "The course project, 2023" : v >= 95 ? "The rebuild, 2026" : Math.round(v) + " percent of the way from then to now");
-  }
-  var touched = false;
-  range.addEventListener("input", function () { touched = true; setWipe(Number(range.value)); });
-  if (!D.reducedMotion() && "IntersectionObserver" in window) {
-    var seen = false;
-    new IntersectionObserver(function (entries, ob) {
-      if (seen || !entries[0].isIntersecting) return;
-      seen = true; ob.disconnect();
-      var t0 = performance.now();
-      (function tick(now) {
-        var k = Math.min(1, (now - t0) / 1100), v = Math.round(100 - 50 * (1 - Math.pow(1 - k, 3)));
-        if (touched) return;      // the visitor already moved it
-        range.value = v; setWipe(v);
-        if (k < 1) requestAnimationFrame(tick);
-      })(t0);
-    }, { threshold: 0.4 }).observe(wipe);
-  }
-
   /* ---- go ---- */
   load();
   $("cart").querySelector("h3").appendChild(h("span", { class: "badge count", id: "cart-count", text: "0", "aria-label": "items" }));
-  renderChips(); renderAccount(); renderCart(); renderTabs(); setWipe(50);
+  renderChips(); renderAccount(); renderCart(); renderTabs();
   if (window.LucasDiagram) { window.LucasDiagram.setCounts(function () { return store.rowCounts(); }); window.LucasDiagram.refresh(); }
   window.LucasStore = { get store() { return store; } };
 })();

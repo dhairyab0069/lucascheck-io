@@ -10,7 +10,7 @@
   --surface: #fff; --card-2: #fffdf6; --hl: #fff6cf; --on-tag: #fff; --on-sun: #1f1a14; --inv-fg: #ffd23f; --focus: #24324d;
   --shade: rgba(31,26,20,.07); --dots: rgba(31,26,20,.07); --shadow-c: rgba(31,26,20,.18); --top-bg: rgba(244,236,218,.94); --lede: #3b342a;
   --alert-bg: #fde3dc; --alert-fg: #7a1708; --ok-bg: #dff2e6; --ok-fg: #0d4a2f; --shipped: #bfe6cf; --sep: #e7dcc2; --coltype: #6f6451; --rel: #8a7d66;
-  --then-fg: #5f4f30; --then-a: #efe3c5; --then-b: #f4ead0; --head-bg: #24324d; }
+  --head-bg: #24324d; }
 :root[data-theme="light"] { color-scheme: light; }
 /* Dark: the store at night. Warm near-black paper, cream ink, the price-tag red and sale-sticker yellow glow brighter. Product photos keep their white stage. */
 :root[data-theme="dark"] {
@@ -20,7 +20,7 @@
   --surface: #2f261c; --card-2: #2c241a; --hl: #3d3217; --on-tag: #1a0a06; --on-sun: #1f1a14; --inv-fg: #1f1a14; --focus: #8fb8ff;
   --shade: rgba(243,233,210,.1); --dots: rgba(243,233,210,.05); --shadow-c: rgba(0,0,0,.55); --top-bg: rgba(21,17,12,.94); --lede: #dccfb4;
   --alert-bg: #3d1a13; --alert-fg: #ffbcad; --ok-bg: #12301f; --ok-fg: #a8e6c4; --shipped: #1f4e36; --sep: #43382a; --coltype: #b3a78f; --rel: #a89a80;
-  --then-fg: #d8c79e; --then-a: #2b2318; --then-b: #31281b; --head-bg: #2d4166;
+  --head-bg: #2d4166;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
@@ -30,7 +30,7 @@
   --surface: #2f261c; --card-2: #2c241a; --hl: #3d3217; --on-tag: #1a0a06; --on-sun: #1f1a14; --inv-fg: #1f1a14; --focus: #8fb8ff;
   --shade: rgba(243,233,210,.1); --dots: rgba(243,233,210,.05); --shadow-c: rgba(0,0,0,.55); --top-bg: rgba(21,17,12,.94); --lede: #dccfb4;
   --alert-bg: #3d1a13; --alert-fg: #ffbcad; --ok-bg: #12301f; --ok-fg: #a8e6c4; --shipped: #1f4e36; --sep: #43382a; --coltype: #b3a78f; --rel: #a89a80;
-  --then-fg: #d8c79e; --then-a: #2b2318; --then-b: #31281b; --head-bg: #2d4166;
+  --head-bg: #2d4166;
   }
 }
 * { box-sizing: border-box; }
@@ -228,10 +228,6 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 2.5rem); font-weight: 800; }
 .k-hole { fill: var(--tag); stroke: none; }
 .dg-legend .k { display: inline-block; width: 11px; height: 11px; margin-right: 6px; vertical-align: -1px; border: 1.2px solid var(--ink); }
 .dg-legend .k.fk { border-radius: 50%; } .dg-legend .k.uq { transform: rotate(45deg) scale(.85); }
-.tbl.gone .tbl-box { stroke-dasharray: 6 4; stroke: var(--tag); }
-.tbl.gone .tbl-head { fill: #7a4a40; }
-.tbl.changed .tbl-box { stroke: #b37a00; }
-.tbl.changed .tbl-head { fill: #6b5522; }
 .rel-line { fill: none; stroke: var(--rel); stroke-width: 2; }
 .rel-dot { fill: var(--rel); }
 .rel-end { fill: var(--dim); font: 700 11px var(--mono); }
@@ -254,25 +250,6 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 2.5rem); font-weight: 800; }
 .dg-sql { background: #1c2233; color: #d7e0f2; border-radius: var(--r); padding: 14px 16px; font: .8rem/1.55 var(--mono); min-height: 110px; overflow: auto; }
 .dg-legend { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 12px; font: .8rem var(--mono); color: var(--dim); }
 
-/* ---------- then and now ---------- */
-ol.timeline { list-style: none; margin: 0 auto 28px; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; counter-reset: m; position: relative; }
-ol.timeline li { display: grid; gap: 4px; align-content: start; padding: 22px 12px 0 0; position: relative; font-size: .9rem; border-top: 3px solid var(--ink); }
-ol.timeline li::before { content: ""; position: absolute; top: -9px; left: 0; width: 15px; height: 15px; border-radius: 50%; background: var(--sun); border: 3px solid var(--ink); }
-ol.timeline li:nth-child(odd)::before { background: var(--tag); }
-.when { font: 800 1rem var(--head); text-transform: uppercase; letter-spacing: .05em; }
-.wipe { position: relative; background: var(--card); border: 2px solid var(--ink); border-radius: var(--r); box-shadow: 0 4px 0 var(--ink); overflow: hidden; --p: 50%; }
-.wipe-head { display: flex; justify-content: space-between; padding: 10px 16px; font: 700 .8rem var(--mono); letter-spacing: .1em; text-transform: uppercase; background: var(--ink); color: var(--inv-fg); }
-.wrow { border-top: 1px dashed var(--line); padding: 12px 0 0; }
-.wrow:first-child { border-top: 0; }
-.wrow h4 { padding: 0 16px; font-size: .78rem; font-family: var(--mono); text-transform: uppercase; letter-spacing: .12em; color: var(--dim); margin-bottom: 4px; }
-.stack { display: grid; }
-.stack p { grid-area: 1 / 1; margin: 0; padding: 4px 16px 14px; }
-.stack .then { padding-right: 52%; font-family: var(--mono); font-size: .9rem; color: var(--then-fg); background: repeating-linear-gradient(135deg, var(--then-a) 0 8px, var(--then-b) 8px 16px); clip-path: inset(0 calc(100% - var(--p)) 0 0); text-decoration: none; }
-.stack .now { padding-left: 52%; font-weight: 700; font-size: 1.02rem; background: var(--surface); color: var(--ink); clip-path: inset(0 0 0 var(--p)); }
-.wipe-line { position: absolute; top: 0; bottom: 64px; left: var(--p); width: 3px; margin-left: -1.5px; background: var(--tag); pointer-events: none; }
-.wipe-line .knob { position: absolute; top: 50%; left: 50%; width: 22px; height: 44px; margin: -22px 0 0 -11px; border-radius: 8px; background: var(--tag); border: 3px solid var(--ink); }
-.wipe-range { display: block; padding: 14px 16px; border-top: 2px solid var(--ink); background: var(--paper-2); }
-.wipe-range input { width: 100%; accent-color: var(--tag); height: 28px; margin: 0; cursor: ew-resize; }
 
 /* ---------- about / footer ---------- */
 .about { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
@@ -288,9 +265,6 @@ ol.timeline li:nth-child(odd)::before { background: var(--tag); }
   .shop { grid-template-columns: 1fr; }
   .side { position: static; order: -1; }
   .dg-info, .about { grid-template-columns: 1fr; }
-  ol.timeline { grid-template-columns: 1fr; border-left: 3px solid var(--ink); }
-  ol.timeline li { border-top: 0; padding: 0 0 18px 20px; }
-  ol.timeline li::before { left: -11px; top: 3px; }
   .steps { margin-left: 0; }
 }
 @media (max-width: 560px) {
@@ -302,14 +276,6 @@ ol.timeline li:nth-child(odd)::before { background: var(--tag); }
   .search { flex: 1 1 100%; }
   .stats { grid-template-columns: 1fr; }
   .tabs [role="tab"] { padding: 8px 10px; font-size: .9rem; }
-}
-@media (max-width: 760px) {
-  .wipe-line, .wipe-range, .wipe-head { display: none; }
-  .stack { display: block; }
-  .stack p, .stack .then, .stack .now { padding: 6px 16px 8px; clip-path: none; }
-  .stack .then::before, .stack .now::before { content: "Then"; display: block; font: 700 .68rem var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
-  .stack .now::before { content: "Now"; color: var(--tag-d); }
-  .stack .then span.vh, .stack .now span.vh { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

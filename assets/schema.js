@@ -1,5 +1,4 @@
-/* The database diagram's data. "now" is src/lib/schema.ts (Postgres, 8 tables); "then" is docs/legacy-orderdb-sqlserver.ddl
-   (the SQL Server script from the course project, 11 tables). Columns are listed as [name, type, flags] with flags
+/* The database diagram's data. src/lib/schema.ts (Postgres, 8 tables). Columns are listed as [name, type, flags] with flags
    pk, fk and uq. Boxes are 210 wide with a 28 header and 18 per row; x and y place them on the drawing. */
 window.LUCAS_SCHEMA = (function () {
   function T(id, x, y, cols, extra) { var t = { id: id, x: x, y: y, cols: cols }; for (var k in extra) t[k] = extra[k]; return t; }
@@ -26,37 +25,7 @@ window.LUCAS_SCHEMA = (function () {
       { id: "r_cat", a: ["product", "category_id", "r"], b: ["category", "category_id", "l"], mx: 800, ends: ["N", "1"], note: "A category groups many products." }
     ]
   };
-  var then = {
-    width: 1080, height: 520,
-    tables: [
-      T("customer", 20, 20, [["customerId", "INT IDENTITY", "pk"], ["firstName", "VARCHAR(40)"], ["lastName", "VARCHAR(40)"], ["email", "VARCHAR(50)"], ["phonenum", "VARCHAR(20)"], ["address", "VARCHAR(50)"], ["city", "VARCHAR(40)"], ["state", "VARCHAR(20)"], ["postalCode", "VARCHAR(20)"], ["country", "VARCHAR(40)"], ["userid", "VARCHAR(20)"], ["password", "VARCHAR(30)"]], { changed: "password stored as plain text" }),
-      T("paymentmethod", 20, 300, [["paymentMethodId", "INT IDENTITY", "pk"], ["paymentType", "VARCHAR(20)"], ["paymentNumber", "VARCHAR(30)"], ["paymentExpiryDate", "DATE"], ["customerId", "INT", "fk"]], { gone: "not in the rebuild (no payment step)" }),
-      T("ordersummary", 290, 20, [["orderId", "INT IDENTITY", "pk"], ["orderDate", "DATETIME"], ["totalAmount", "DECIMAL(10,2)"], ["shiptoAddress", "VARCHAR(50)"], ["shiptoCity", "VARCHAR(40)"], ["shiptoState", "VARCHAR(20)"], ["shiptoPostalCode", "VARCHAR(20)"], ["shiptoCountry", "VARCHAR(40)"], ["customerId", "INT", "fk"]], { changed: "ship-to columns dropped in the rebuild" }),
-      T("orderproduct", 290, 270, [["orderId", "INT", "pk fk"], ["productId", "INT", "pk fk"], ["quantity", "INT"], ["price", "DECIMAL(10,2)"]]),
-      T("incart", 290, 410, [["orderId", "INT", "pk fk"], ["productId", "INT", "pk fk"], ["quantity", "INT"], ["price", "DECIMAL(10,2)"]], { gone: "not in the rebuild (the cart is a cookie)" }),
-      T("product", 560, 20, [["productId", "INT IDENTITY", "pk"], ["productName", "VARCHAR(40)"], ["productDesc", "VARCHAR(1000)"], ["price", "DECIMAL(10,2)"], ["categoryId", "INT", "fk"], ["productImageURL", "VARCHAR(50)"]]),
-      T("productinventory", 560, 190, [["productId", "INT", "pk fk"], ["warehouseId", "INT", "pk fk"], ["quantity", "INT"], ["price", "DECIMAL(10,2)"]]),
-      T("review", 560, 330, [["reviewId", "INT IDENTITY", "pk"], ["reviewRating", "INT"], ["reviewDate", "DATETIME"], ["customerId", "INT", "fk"], ["productId", "INT", "fk"], ["reviewComment", "VARCHAR(1000)"]], { gone: "not in the rebuild" }),
-      T("category", 830, 20, [["categoryId", "INT IDENTITY", "pk"], ["categoryName", "VARCHAR(50)"]]),
-      T("warehouse", 830, 190, [["warehouseId", "INT IDENTITY", "pk"], ["warehouseName", "VARCHAR(30)"]]),
-      T("shipment", 830, 330, [["shipmentId", "INT IDENTITY", "pk"], ["shipmentDate", "DATETIME"], ["shipmentDesc", "VARCHAR(100)"], ["warehouseId", "INT", "fk"]], { changed: "no order_id yet: the rebuild links a shipment to its order" })
-    ],
-    rels: [
-      { id: "t_pm", a: ["paymentmethod", "customerId", "t", 60], b: ["customer", "customerId", "b", 60], ends: ["N", "1"], note: "A customer could keep payment methods." },
-      { id: "t_os_c", a: ["ordersummary", "customerId", "l"], b: ["customer", "customerId", "r"], mx: 260, ends: ["N", "1"], note: "A customer places many orders." },
-      { id: "t_op_o", a: ["orderproduct", "orderId", "t", 40], b: ["ordersummary", "orderId", "b", 40], ends: ["N", "1"], note: "An order has many lines." },
-      { id: "t_op_p", a: ["orderproduct", "productId", "r"], b: ["product", "productId", "l"], mx: 530, ends: ["N", "1"], note: "Each line is one product." },
-      { id: "t_ic_o", a: ["incart", "orderId", "l"], b: ["ordersummary", "orderId", "l"], mx: 275, ends: ["N", "1"], note: "The cart lines were stored in the database, tied to an order." },
-      { id: "t_ic_p", a: ["incart", "productId", "r"], b: ["product", "productId", "l"], mx: 548, ends: ["N", "1"], note: "Each cart line is one product." },
-      { id: "t_rv_c", a: ["review", "customerId", "l"], b: ["customer", "customerId", "r"], mx: 245, ends: ["N", "1"], note: "A customer could review products." },
-      { id: "t_rv_p", a: ["review", "productId", "l"], b: ["product", "productId", "l"], mx: 552, ends: ["N", "1"], note: "A review is about one product." },
-      { id: "t_pi_p", a: ["productinventory", "productId", "t", 30], b: ["product", "productId", "b", 30], ends: ["N", "1"], note: "Stock per product and warehouse." },
-      { id: "t_pi_w", a: ["productinventory", "warehouseId", "r"], b: ["warehouse", "warehouseId", "l"], mx: 800, ends: ["N", "1"], note: "Which warehouse holds the stock." },
-      { id: "t_sh_w", a: ["shipment", "warehouseId", "t", 60], b: ["warehouse", "warehouseId", "b", 60], ends: ["N", "1"], note: "A shipment leaves from a warehouse." },
-      { id: "t_pr_c", a: ["product", "categoryId", "r"], b: ["category", "categoryId", "l"], mx: 800, ends: ["N", "1"], note: "A category groups many products." }
-    ]
-  };
-  /* Walkthroughs for the "now" diagram: each step lights some tables and relations and shows the SQL the store runs there. */
+  /* Walkthroughs: each step lights some tables and relations and shows the SQL the store runs there. */
   var scenes = [
     { id: "browse", label: "Browse the shop", steps: [
       { tables: ["product", "category"], rels: ["r_cat"], text: "The shop page joins each product to its category.", sql: "SELECT p.product_id AS id, p.product_name AS name, p.price::float8 AS price, c.category_name AS category,\n       COALESCE(i.quantity, 0) AS stock\nFROM product p\nJOIN category c ON c.category_id = p.category_id\nLEFT JOIN product_inventory i ON i.product_id = p.product_id AND i.warehouse_id = 1\nORDER BY p.product_name" },
@@ -75,5 +44,5 @@ window.LUCAS_SCHEMA = (function () {
       { tables: ["shipment", "order_summary", "warehouse"], rels: ["r_ship_o", "r_ship_w"], text: "Record the shipment. order_id is UNIQUE, so shipping the same order twice at once fails here.", sql: "INSERT INTO shipment (order_id, warehouse_id) VALUES ($1, 1)" }
     ] }
   ];
-  return { now: now, then: then, scenes: scenes };
+  return { now: now, scenes: scenes };
 })();

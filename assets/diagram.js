@@ -7,7 +7,7 @@
   var svg = document.getElementById("dg");
   if (!svg || !S) return;
 
-  var era = "now", sceneId = null, stepIdx = -1, selected = null, timer = null, counts = function () { return {}; };
+  var sceneId = null, stepIdx = -1, selected = null, timer = null, counts = function () { return {}; };
   var lastCounts = {}, dotLayer = null, raf = 0, activePaths = [];
   var reduce = D.reducedMotion;   // a function: Motion can change while the page is open
 
@@ -18,7 +18,7 @@
     if (parent) parent.appendChild(n);
     return n;
   }
-  function set() { return S[era]; }
+  function set() { return S.now; }
   function tableById(id) { var r = null; set().tables.forEach(function (t) { if (t.id === id) r = t; }); return r; }
   function height(t) { return HEAD + t.cols.length * ROW; }
   function anchor(ref) {
@@ -62,15 +62,14 @@
     s.tables.forEach(function (t) {
       var h = height(t);
       var g = el("g", {
-        "class": "tbl" + (t.gone ? " gone" : t.changed ? " changed" : ""), "data-id": t.id, tabindex: "0", role: "button",
+        "class": "tbl", "data-id": t.id, tabindex: "0", role: "button",
         "aria-pressed": "false", transform: "translate(" + t.x + " " + t.y + ")",
-        "aria-label": t.id + " table, " + t.cols.length + " columns" + (t.gone ? ", not in the rebuild" : t.changed ? ", changed in the rebuild" : "") + ". Select to see how it connects."
+        "aria-label": t.id + " table, " + t.cols.length + " columns. Select to see how it connects."
       }, tabG);
       el("rect", { width: W, height: h, rx: 6, "class": "tbl-box" }, g);
       el("path", { d: "M0 6a6 6 0 0 1 6-6h" + (W - 12) + "a6 6 0 0 1 6 6v" + (HEAD - 6) + "H0z", "class": "tbl-head" }, g);
       el("text", { x: 10, y: 19, "class": "tbl-name" }, g).textContent = t.id;
-      if (era === "now") el("text", { x: W - 10, y: 19, "text-anchor": "end", "class": "tbl-rows", "data-rows": t.id }, g).textContent = (c[t.id] != null ? c[t.id] : "") + " rows";
-      else if (t.gone || t.changed) el("text", { x: W - 10, y: 19, "text-anchor": "end", "class": "tbl-rows" }, g).textContent = t.gone ? "dropped" : "changed";
+      el("text", { x: W - 10, y: 19, "text-anchor": "end", "class": "tbl-rows", "data-rows": t.id }, g).textContent = (c[t.id] != null ? c[t.id] : "") + " rows";
       t.cols.forEach(function (col, i) {
         var y = HEAD + i * ROW;
         if (i) el("line", { x1: 0, x2: W, y1: y, y2: y, "class": "tbl-sep" }, g);
@@ -164,22 +163,15 @@
     } else if (selected) {
       var t = tableById(selected), rs = set().rels.filter(function (r) { return r.a[0] === selected || r.b[0] === selected; });
       no.textContent = "Table " + t.id;
-      txt.textContent = (t.gone ? "Not in the rebuild: " + t.gone + ". " : t.changed ? "Changed in the rebuild: " + t.changed + ". " : "") +
-        (rs.length ? rs.map(function (r) { return r.note; }).join(" ") : "It has no foreign keys.");
+      txt.textContent = (rs.length ? rs.map(function (r) { return r.note; }).join(" ") : "It has no foreign keys.");
       code.appendChild(D.sqlFragment(ddl(t)));
     } else {
-      no.textContent = era === "then" ? "The course project's schema" : "";
-      if (era === "then") {
-        var gone = set().tables.filter(function (x) { return x.gone; }).map(function (x) { return x.id; });
-        var chg = set().tables.filter(function (x) { return x.changed; }).map(function (x) { return x.id; });
-        txt.textContent = "From docs/legacy-orderdb-sqlserver.ddl, 11 tables. Dropped in the rebuild: " + gone.join(", ") + ". Changed: " + chg.join(", ") + ". Select a table for details.";
-      } else txt.textContent = "Select a table, or pick a walkthrough and press Play.";
+      no.textContent = "";
+      txt.textContent = "Select a table, or pick a walkthrough and press Play.";
       code.appendChild(document.createTextNode("-- the statement for each step appears here"));
     }
-    var sceneOn = era === "now";
-    ["dg-back", "dg-play", "dg-next", "dg-clear"].forEach(function (id) { $(id).disabled = !sceneOn; });
     $("dg-play").textContent = timer ? "Pause" : "Play";
-    $("dg-back").disabled = !sceneOn || stepIdx <= 0;
+    $("dg-back").disabled = stepIdx <= 0;
   }
 
   /* ---- controls ---- */
@@ -226,18 +218,9 @@
     }, 3200);
     renderText(currentStep());
   }
-  function setEra(e) {
-    stop(); era = e; sceneId = null; stepIdx = -1; selected = null;
-    Array.prototype.forEach.call(document.querySelectorAll("[data-era]"), function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-era") === e ? "true" : "false"); });
-    Array.prototype.forEach.call($("scenes").children, function (b) { b.setAttribute("aria-pressed", "false"); b.disabled = e !== "now"; });
-    draw();
-    if (window.Sfx) window.Sfx.play("tab");
-  }
-
   S.scenes.forEach(function (sc) {
     $("scenes").appendChild(D.h("button", { type: "button", "data-scene": sc.id, "aria-pressed": "false", text: sc.label, onclick: function () { pickScene(sc.id); } }));
   });
-  Array.prototype.forEach.call(document.querySelectorAll("[data-era]"), function (b) { b.addEventListener("click", function () { setEra(b.getAttribute("data-era")); }); });
   $("dg-back").addEventListener("click", function () { stop(); go(stepIdx - 1); });
   $("dg-next").addEventListener("click", function () { stop(); next(); });
   $("dg-play").addEventListener("click", play);
@@ -260,7 +243,6 @@
     setCounts: function (fn) { counts = fn; },
     /* called after the store changes: update the row counts in place and flash the ones that moved */
     refresh: function () {
-      if (era !== "now") return;
       var c = counts();
       Array.prototype.forEach.call(svg.querySelectorAll("[data-rows]"), function (t) {
         var id = t.getAttribute("data-rows");
@@ -269,7 +251,7 @@
       });
       lastCounts = c;
     },
-    highlight: function (sceneName) { /* used by the store: jump the diagram to a walkthrough */ if (S.scenes.some(function (s) { return s.id === sceneName; })) { if (era !== "now") setEra("now"); pickScene(sceneName); } }
+    highlight: function (sceneName) { /* used by the store: jump the diagram to a walkthrough */ if (S.scenes.some(function (s) { return s.id === sceneName; })) { pickScene(sceneName); } }
   };
   draw();
 })();

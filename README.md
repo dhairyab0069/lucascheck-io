@@ -1,7 +1,7 @@
 # lucascheck-io
 
 The project page for [Lucas-Check](https://github.com/dhairyab0069/LucasCheck), a mock sporting goods store that began as the
-COSC 304 (Introduction to Database Systems) term project of Group 4 and was rebuilt in 2026 on Next.js 16 and Postgres for Vercel.
+COSC 304 (Introduction to Database Systems) project of Group 4, built on Next.js 16 and Postgres for Vercel.
 
 Live at **<https://dhairyab0069.github.io/lucascheck-io/>** (GitHub Pages, from the repo root). The real store's live demo is
 <https://lucascheck.vercel.app>.
@@ -15,11 +15,9 @@ It is a static site: HTML, CSS and vanilla JavaScript, no build step, no librari
   table), log in with one of the five sample accounts to check out, get a receipt, see your orders, and, as `arnold`, use the Admin tab
   (revenue, sales by day, a Ship button that refuses when any line is short of stock and ships an order only once). Below it, a log
   shows the SQL the real store would send for each click.
-- **The database.** An SVG diagram of the 8 tables of `src/lib/schema.ts` (and, with one switch, the 11 tables of the original SQL
-  Server script, with what the rebuild dropped or changed marked). Three walkthroughs (browse, place an order, ship an order) step
+- **The database.** An SVG diagram of the 8 tables of `src/lib/schema.ts` Three walkthroughs (browse, place an order, ship an order) step
   through the tables and foreign keys a query touches, with a dot running along each relation and the statement shown. Select a
   table to see its relations and its `CREATE TABLE`. Row counts on the table headers follow what you do in the store.
-- **Then and now.** A timeline and a wipe slider between the JSP course project and the rebuild, nine real differences.
 
 The store on the page is a plain JavaScript re-implementation, not the Next.js app, so the page can run on GitHub Pages. Orders you place
 are kept in this browser's local storage (when allowed); "Reset the store" clears them. The sample passwords are public on purpose, as
@@ -43,7 +41,7 @@ Three icon buttons in the bottom-right group (sun, moon, half circle) choose lig
 
 ## Motion and accessibility
 
-The swaying tag, the flowing relation lines, the travelling dot, the wipe's intro sweep and the diagram's auto-play are skipped when the
+The swaying tag, the flowing relation lines, the travelling dot, the diagram's auto-play are skipped when the
 Motion control is off or the system asks for reduced motion (the diagram keeps Step and Back). Everything is a real button, link or input with a visible focus ring;
 tabs use arrow keys; diagram tables are focusable buttons; changes are announced through a live region; the diagram scrolls sideways on
 small screens.
