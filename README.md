@@ -27,18 +27,24 @@ in the store's own README.
 
 ## Sound
 
-The Sound switch (top bar, off by default, remembered in `localStorage`) turns on small sounds made live with the Web Audio API: a
+Sound (on by default, see Controls and defaults below) plays small sounds made live with the Web Audio API: a
 scanner beep when something goes in the cart, a till drawer and bell when an order is placed, a box thud and tape for shipping, a buzz
 for errors, a ping per diagram step. There are no audio files. Nothing plays while the tab is hidden.
 
+## Controls and defaults
+
+Four symbol buttons sit bottom right, beside the light/dark/auto switch: Sound (speaker), Motion (flowing waves), Effects (sparkle) and Quiet everything (circle with a bar). Sound, Motion and Effects all start on; Motion starts off only when the system asks for reduced motion. Browsers only allow audio after a gesture, so sound starts at the first click, key press or touch. Pressing Quiet everything turns all three off, and pressing it again restores exactly what was on before. Choices are saved under `lucascheck2-sound`, `lucascheck2-motion` and `lucascheck2-fx` in `localStorage` (the page works with storage blocked). Effects: a warm yellow light that follows the pointer and slow drifting paper specks. Motion off stops every animation, transition and loop (`html[data-motion="off"]`). The page makes no external requests.
+
+Design notes are in [DESIGN.md](DESIGN.md).
+
 ## Light, dark and auto
 
-Three icon buttons in the top bar (sun, moon, half circle) choose light, dark or auto (follow the system). The choice is stored under the key `theme` in `localStorage`, which every page on dhairyab0069.github.io shares, so changing it here changes it on the other sites too, live. Light is the cream shelf-paper look; dark is the same store at night, with warm near-black paper, cream ink and brighter price-tag red and sale-sticker yellow. Product photos keep their white stage in both. The change is a short circle reveal with a soft sound cue, and is instant under `prefers-reduced-motion`. An inline script in `index.html` applies the saved mode before the first paint.
+Three icon buttons in the bottom-right group (sun, moon, half circle) choose light, dark or auto (follow the system). The choice is stored under the key `theme` in `localStorage`, which every page on dhairyab0069.github.io shares, so changing it here changes it on the other sites too, live. Light is the cream shelf-paper look; dark is the same store at night, with warm near-black paper, cream ink and brighter price-tag red and sale-sticker yellow. Product photos keep their white stage in both. The change is a short circle reveal with a soft sound cue, and is instant under `prefers-reduced-motion`. An inline script in `index.html` applies the saved mode before the first paint.
 
 ## Motion and accessibility
 
 The swaying tag, the flowing relation lines, the travelling dot, the wipe's intro sweep and the diagram's auto-play are skipped when the
-system asks for reduced motion (the diagram keeps Step and Back). Everything is a real button, link or input with a visible focus ring;
+Motion control is off or the system asks for reduced motion (the diagram keeps Step and Back). Everything is a real button, link or input with a visible focus ring;
 tabs use arrow keys; diagram tables are focusable buttons; changes are announced through a live region; the diagram scrolls sideways on
 small screens.
 
@@ -61,6 +67,8 @@ If a clone of LucasCheck sits next to this repo, the test also compares the seed
 | `assets/schema.js` | the diagram's tables, relations and walkthroughs |
 | `assets/app.js`, `diagram.js`, `dom.js` | the store UI, the diagram, small helpers |
 | `assets/sound.js` | the synthesized sounds |
+| `assets/controls.js` | the four symbol controls and the pointer and particle effects |
+| `DESIGN.md` | design write-up |
 | `assets/style.css` | styles |
 | `assets/img/` | product photos, shrunk to 360 px WebP |
 

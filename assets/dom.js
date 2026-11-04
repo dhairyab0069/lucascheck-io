@@ -32,5 +32,5 @@ window.LucasDom = (function () {
     if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
     return frag;
   }
-  return { h: h, sqlFragment: sqlFragment, reducedMotion: function () { return window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches; } };
+  return { h: h, sqlFragment: sqlFragment, reducedMotion: function () { return document.documentElement.getAttribute("data-motion") === "off" || !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches); } };
 })();

@@ -39,14 +39,6 @@
   <nav aria-label="Sections">
     <a href="#store">Store</a><a href="#diagram">Database</a><a href="#then-now">Then and now</a><a href="#about">About</a>
   </nav>
-  <div class="ctl">
-    <div class="theme-switch" role="radiogroup" aria-label="Color theme">
-      <button type="button" role="radio" aria-checked="false" data-theme-mode="light" aria-label="Light theme" title="Light theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/></svg></button>
-      <button type="button" role="radio" aria-checked="false" data-theme-mode="dark" aria-label="Dark theme" title="Dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></button>
-      <button type="button" role="radio" aria-checked="false" data-theme-mode="auto" aria-label="Match system theme" title="Auto (match system)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor"/></svg></button>
-    </div>
-    <button type="button" class="snd" data-sound-switch aria-pressed="false"><span class="lbl">Sound off</span></button>
-  </div>
 </header>
 
 <main id="main">
@@ -230,6 +222,19 @@
     <a href="https://github.com/dhairyab0069/lucascheck-io" rel="noopener">Page source</a> &middot; <a href="https://dhairyab0069.github.io/">dhairyab0069</a></p>
 </footer>
 
+<div class="ctl" role="group" aria-label="Theme, sound, motion, effects and quiet">
+  <div class="theme-switch" role="radiogroup" aria-label="Color theme">
+    <button type="button" role="radio" aria-checked="false" data-theme-mode="light" aria-label="Light theme" title="Light theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/></svg></button>
+    <button type="button" role="radio" aria-checked="false" data-theme-mode="dark" aria-label="Dark theme" title="Dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></button>
+    <button type="button" role="radio" aria-checked="false" data-theme-mode="auto" aria-label="Match system theme" title="Auto (match system)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor"/></svg></button>
+  </div>
+<button class="ico" type="button" id="ctl-sound" aria-pressed="true" aria-label="Sound on" title="Sound on. Press to turn off."><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/><g class="on-only"><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></g><path class="off-only" d="M4 20 20 4"/></svg></button>
+<button class="ico" type="button" id="ctl-motion" aria-pressed="true" aria-label="Motion on" title="Motion on. Press to turn off."><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path class="on-only" d="M2.5 9c2-2.6 3.5-2.6 5.5 0s3.5 2.6 5.5 0 3.5-2.6 5.5 0M2.5 15c2-2.6 3.5-2.6 5.5 0s3.5 2.6 5.5 0 3.5-2.6 5.5 0"/><g class="off-only"><path d="M8.5 6.5v11M15.5 6.5v11"/></g></svg></button>
+<button class="ico" type="button" id="ctl-fx" aria-pressed="true" aria-label="Effects on" title="Effects on. Press to turn off."><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.500l1.800 5.100L18 10.400l-5.200 1.800L11 17.300l-1.800-5.100L4 10.400l5.200-1.800z"/><g class="on-only"><path d="M18.500 15.500v4M16.500 17.500h4"/><path d="M19 3.500v2.500M17.750 4.750h2.500"/></g><path class="off-only" d="M4 20 20 4"/></svg></button>
+<button class="ico" type="button" id="ctl-quiet" aria-pressed="false" aria-label="Quiet everything" title="Quiet everything: sound, motion and effects off. Press again to bring them back."><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.500"/><path d="M8 12h8"/></svg></button>
+</div>
+<script>window.CTL = { prefix: "lucascheck2", fx: { glow: true, particles: { n: 18, color: "--kraft", dir: "fall", size: 2.6, speed: 12 } } };</script>
+<script src="assets/controls.js"></script>
 <script src="assets/data.js"></script>
 <script src="assets/schema.js"></script>
 <script src="assets/model.js"></script>

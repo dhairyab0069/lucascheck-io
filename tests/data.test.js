@@ -143,9 +143,11 @@ ok("no external requests: only links go off-site, never scripts, styles, images,
     assert.doesNotMatch(src, /fetch\(|XMLHttpRequest|@import|url\(\s*["']?https?:|new WebSocket|sendBeacon/, f);
   }
 });
-ok("sound is off by default and there are no audio files", () => {
-  assert.match(html, /data-sound-switch aria-pressed="false"/);
-  assert.match(read("assets/sound.js"), /var on = false/);
+ok("four symbol controls, sound/motion/effects on by default, versioned keys, no audio files", () => {
+  for (const id of ["sound", "motion", "fx"]) assert.match(html, new RegExp('id="ctl-' + id + '" aria-pressed="true"'));
+  assert.match(html, /id="ctl-quiet" aria-pressed="false"/);
+  assert.match(html, /prefix: "lucascheck2"/);
+  assert.match(read("assets/controls.js"), /sound: s\.sound !== 'off'/);
   const files = fs.readdirSync(path.join(root, "assets"), { recursive: true });
   assert.equal(files.filter((f) => /\.(mp3|wav|ogg|m4a|flac)$/i.test(f)).length, 0);
 });

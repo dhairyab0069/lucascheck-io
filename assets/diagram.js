@@ -9,7 +9,7 @@
 
   var era = "now", sceneId = null, stepIdx = -1, selected = null, timer = null, counts = function () { return {}; };
   var lastCounts = {}, dotLayer = null, raf = 0, activePaths = [];
-  var reduce = D.reducedMotion();
+  var reduce = D.reducedMotion;   // a function: Motion can change while the page is open
 
   var $ = function (id) { return document.getElementById(id); };
   function el(name, attrs, parent) {
@@ -127,7 +127,7 @@
     cancelAnimationFrame(raf);
     if (!dotLayer) return;
     while (dotLayer.firstChild) dotLayer.removeChild(dotLayer.firstChild);
-    if (reduce || !activePaths.length) return;
+    if (reduce() || !activePaths.length) return;
     var dots = activePaths.map(function () { return el("circle", { r: 5, "class": "traveller" }, dotLayer); });
     var t0 = performance.now();
     (function tick(now) {
@@ -242,7 +242,9 @@
   $("dg-next").addEventListener("click", function () { stop(); next(); });
   $("dg-play").addEventListener("click", play);
   $("dg-clear").addEventListener("click", clear);
-  if (reduce) { $("dg-play").hidden = true; }
+  function syncPlay() { $("dg-play").hidden = reduce(); }
+  syncPlay();
+  window.addEventListener("ctlchange", function () { syncPlay(); if (reduce()) stop(); startDot(); });
   svg.addEventListener("click", function (e) {
     var g = e.target.closest ? e.target.closest(".tbl") : null;
     if (g) select(g.getAttribute("data-id")); else if (selected) { selected = null; paint(); }

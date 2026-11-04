@@ -1,11 +1,10 @@
-/* Store sounds, off until the Sound switch is pressed. Everything is synthesized with the Web Audio API (a few sine and
+/* Store sounds, on by default and gated by the Sound symbol (controls.js, Ctl.state.sound). Everything is synthesized with the Web Audio API (a few sine and
    triangle partials plus filtered noise), so there are no audio files and no requests. Other scripts call Sfx.play("name").
    Nothing plays while the tab is hidden. The choice is remembered in localStorage when that is available. */
 (function () {
   "use strict";
-  var KEY = "lucascheck-sound", MAX = 60;
-  var on = false, ctx = null, master = null, noise = null, voices = 0, last = {};
-  try { on = localStorage.getItem(KEY) === "1"; } catch (e) { /* storage blocked */ }
+  var MAX = 60;
+  var ctx = null, master = null, noise = null, voices = 0, last = {};
 
   function ensure() {
     if (ctx) return true;
@@ -22,7 +21,7 @@
     } catch (e) { ctx = null; return false; }
     return true;
   }
-  function ready() { return on && ctx && ctx.state === "running" && !document.hidden; }
+  function ready() { return window.Ctl && window.Ctl.state.sound && ctx && ctx.state === "running" && !document.hidden; }
   function gap(k, ms) { var n = performance.now(); if (n - (last[k] || 0) < ms) return true; last[k] = n; return false; }
 
   /* a note: o = {f, to, type, gain, dur, at, attack} */
@@ -83,31 +82,16 @@
     reset: function () { tone({ f: 440, to: 220, dur: 0.15, type: "triangle", gain: 0.04 }); }
   };
 
-  function paint() {
-    var switches = document.querySelectorAll("[data-sound-switch]");
-    for (var i = 0; i < switches.length; i++) {
-      switches[i].setAttribute("aria-pressed", on ? "true" : "false");
-      var l = switches[i].querySelector(".lbl"); if (l) l.textContent = on ? "Sound on" : "Sound off";
-    }
-  }
-  function toggle() {
-    on = !on;
-    try { localStorage.setItem(KEY, on ? "1" : "0"); } catch (e) { /* ignore */ }
-    if (on && ensure()) { if (ctx.state === "suspended") ctx.resume(); }
-    paint();
-    if (on) setTimeout(function () { if (ready()) sounds.login(); }, 120);
-  }
   window.Sfx = {
     play: function (name, arg) { if (!ready() || !sounds[name]) return; try { sounds[name](arg); } catch (e) { /* audio is optional */ } },
-    toggle: toggle,
-    isOn: function () { return on; }
+    isOn: function () { return !!(window.Ctl && window.Ctl.state.sound); }
   };
-  document.addEventListener("DOMContentLoaded", function () {
-    paint();
-    var switches = document.querySelectorAll("[data-sound-switch]");
-    for (var i = 0; i < switches.length; i++) switches[i].addEventListener("click", toggle);
+  /* browsers only let audio start after a gesture: the first pointer, key or touch wakes it */
+  function wake() { if (window.Ctl && window.Ctl.state.sound && ensure() && ctx.state === "suspended") ctx.resume(); }
+  window.addEventListener("ctlunlock", wake);
+  window.addEventListener("ctlchange", function (e) {
+    var k = e.detail.key;
+    if ((k === "sound" || k === "quiet") && window.Ctl.state.sound) { wake(); setTimeout(function () { window.Sfx.play(k === "sound" ? "login" : "step"); }, 120); }
   });
-  /* browsers only let audio start after a gesture: the first click or key press wakes it when sound was left on */
-  function wake() { if (on && ensure() && ctx.state === "suspended") ctx.resume(); }
-  document.addEventListener("pointerdown", wake); document.addEventListener("keydown", wake);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) wake(); });
 })();

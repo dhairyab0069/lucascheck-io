@@ -10,7 +10,7 @@
   var mode = root.getAttribute("data-theme-mode") || "auto";
   function resolve(m) { return m === "auto" ? (mq.matches ? "dark" : "light") : m; }
   function normal(m) { return m === "light" || m === "dark" ? m : "auto"; }
-  function reduced() { return matchMedia("(prefers-reduced-motion: reduce)").matches; }
+  function reduced() { return root.getAttribute("data-motion") === "off" || matchMedia("(prefers-reduced-motion: reduce)").matches; }
 
   document.addEventListener("DOMContentLoaded", function () {
     var sw = document.querySelector(".theme-switch");
